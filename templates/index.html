@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chatbot Demo</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+	<div id="chat-container">
+		<div id="chat-header">
+			<h1>Chatbot Doctor</h1>
+		</div>
+		<div id="chat-body">
+			<ul id="messages"></ul>
+		</div>
+		<div id="chat-footer">
+			<input type="text" id="user-input" autocomplete="off">
+			<button id="send-btn">Send</button>
+		</div>
+	</div>
+
+	<script>
+		$(function() {
+			// Function to display a message in the chat body
+			function displayMessage(message) {
+				$("#messages").append("<li>" + message + "</li>");
+			}
+
+			// Function to send a message to the server
+			function sendMessage() {
+				// Get the user's message
+				var message = $("#user-input").val();
+				// Send the message to the server
+				$.ajax({
+					url: "/chat",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({message: message}),
+					success: function(response) {
+						// Display the response in the chat body
+						displayMessage("You: " + message);
+						displayMessage("Chatbot: " + response.response);
+						// Clear the user's input
+						$("#user-input").val("");
+					},
+					error: function(xhr, status, error) {
+						// Display an error message in the chat body
+						displayMessage("Error: " + error);
+					}
+				});
+			}
+
+			// Call the sendMessage function when the send button is clicked
+			$("#send-btn").click(sendMessage);
+
+			// Call the sendMessage function when the enter key is pressed
+			$("#user-input").keypress(function(event) {
+				if (event.which == 13) {
+					event.preventDefault();
+					sendMessage();
+				}
+			});
+		});
+	</script>
+</body>
+</html>

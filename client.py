@@ -1,7 +1,12 @@
 import requests
 
 # Define the server URL
-server_url = "http://<your_server_ip>:5000/chat"
+server_url = "http://localhost:5000/chat"
+
+# Start the conversation with the doctor's greeting
+response = requests.post(server_url, json={"message": "Hello"})
+response_text = response.json()["response"]
+print("Chatbot:", response_text)
 
 while True:
     # Get the user's message
