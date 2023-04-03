@@ -1,28 +1,39 @@
 import openai
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify ,render_template
 
 app = Flask(__name__)
 
-openai.api_key = "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" # Replace with your OpenAI API key
+# Set up OpenAI API credentials
+openai.api_key = "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"
 
-model_engine = "text-davinci-002" # Replace with the model engine you want to use
-
-@app.route("/")
-def home():
-    return "Hello, World!"
-
-@app.route("/chatbot", methods=["POST"])
-def chatbot():
-    prompt = "You are talking to your personal doctor. How may I help you today?" + request.form["prompt"]
+# Define a function to generate response
+def generate_response(prompt):
+    # Call OpenAI's GPT-3 API
     response = openai.Completion.create(
-        engine=model_engine,
+        engine="davinci",
         prompt=prompt,
-        max_tokens=100,
+        max_tokens=1024,
         n=1,
         stop=None,
         temperature=0.5,
     )
-    return jsonify({"response": response.choices[0].text.strip()})
+    # Return the response
+    return response.choices[0].text.strip()
+
+# Define a route to receive chat requests
+@app.route("/chat", methods=["POST"])
+def chat():
+    # Get the user's message from the request
+    message = request.json["message"]
+    # Generate a response using the user's message as prompt
+    response = generate_response(message)
+    # Return the response as JSON
+    return jsonify({"response": response})
+
+
+@app.route("/")
+def index():
+	return render_template("index.html")
 
 if __name__ == "__main__":
-    app.run(debug=True,port=6000)
+    app.run()

@@ -1,0 +1,18 @@
+import os
+import openai
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+start_sequence = "\nAI:"
+restart_sequence = "\nHuman: "
+
+response = openai.Completion.create(
+  model="text-davinci-003",
+  prompt="The following is a conversation with an AI personal mental doctor. The doctor is helpful, creative, clever, and very friendly.\n\nHuman: Hello, who are you?\ndoctor: I am an AI created doctorI. How can I help you today?\nHuman: i have some mental psychological problem and i need to talk to you \nAI: That's ok. What kind of mental health issue are you facing today?\nHuman: i cant sleep well\nAI: That's a common issue. What do you think could be causing your difficulty sleeping?\nHuman: i drink coffee\nAI:",
+  temperature=0.9,
+  max_tokens=150,
+  top_p=1,
+  frequency_penalty=0,
+  presence_penalty=0.6,
+  stop=[" Human:", " AI:"]
+)
